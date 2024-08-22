@@ -24,7 +24,6 @@
                 <div class="col-md-8">
                   <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">{{ product.description }}</p>
                   <div>
                       {% if product.is_sale %}
 
@@ -33,8 +32,8 @@
 
                       {% else %}
                           <p class="card-text">$ {{ product.price }}</p>
-                          <br/>
-                          <p>ID: {{ product.id }}</p>
+
+
                       {% endif %}
                   </div>
                   <div>
@@ -47,8 +46,10 @@
             </div>
 
         {% endfor %}
+    {% else %}
+        There is nothing in your cart
     {% endif %}
-    There is nothing in your cart
+
 
     </div>
 
