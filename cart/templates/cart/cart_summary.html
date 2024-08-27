@@ -40,7 +40,7 @@
       <div class="row justify">
          <div class="col-md-2">Quantity:</div>
          <div class="col-md-2">
-            <select class="form-select" id="qty-cart">
+            <select class="form-select" id="select{{ product.id }}">
                 <option selected>
                     <!-- {'4':3, '5':2} -->
                     {% for key, value in quantities.items %}
@@ -61,8 +61,10 @@
       </div>
 
                   </div>
+                  <br/>
                   <div>
                     <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+                    <button type="button" data-index="{{ product.id }}" class="btn btn-secondary update-cart" >Update Cart</button>
                       
                       </div>
                   </div>
@@ -79,4 +81,32 @@
     </div>
 
     <br/><br/><br/><br/><br/><br/><br/><br/>
+
+
+<script>
+    $(document).on('click', '.update-cart', function(e){
+    e.preventDefault();
+    // grab the product id
+        var productid = $(this).data('index');
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'cart_update' %}',
+        data: {
+            product_id: $(this).data('index'),
+            product_qty: $('#select' + productid + ' option:selected').text(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function(json){
+            //console.log(json)
+            //document.getElementById("cart_quantity").textContent = json.qty
+            location.reload();
+        },
+        error: function(xhr, errmsg, err){
+
+        },
+    });
+})
+</script>
+
 {% endblock %}
