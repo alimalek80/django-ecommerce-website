@@ -8,6 +8,9 @@ from .forms import SignUpForm
 from django import forms
 
 
+def category_summary(request):
+    categories = Category.objects.all()
+    return render(request, 'store/category_summary.html', {'categories': categories})
 def product(request, pk):
     product = Product.objects.get(id=pk)
     return render(request, 'store/product.html', {'product': product})
