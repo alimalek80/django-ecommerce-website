@@ -3,8 +3,8 @@ from .models import Product, Category
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, UpdateUserForm
+from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm
 from django import forms
 
 
@@ -96,3 +96,30 @@ def category(request, foo):
     except:
         messages.warning(request, ("Hey this Category doesn't exist!"))
         return redirect('home')
+
+
+def update_password(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+        # Did they fill out the form
+        if request.method == 'POST':
+            # Do stuff
+            form = ChangePasswordForm(current_user, request.POST)
+            # Is the form valid
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Password successfully updated.")
+                # login(request, current_user)
+                return redirect('login')
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request, error)
+                    return redirect('update_password')
+
+        else:
+            form = ChangePasswordForm(current_user)
+            return render(request, 'store/update_password.html', {'form': form})
+    else:
+        messages.warning(request, "You are not logged in")
+        redirect('login')
+
