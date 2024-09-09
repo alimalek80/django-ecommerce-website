@@ -1,16 +1,18 @@
 from django.shortcuts import render, redirect
-from .models import Product, Category
+from .models import Product, Category, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
-from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
 from django import forms
 
 
 def category_summary(request):
     categories = Category.objects.all()
     return render(request, 'store/category_summary.html', {'categories': categories})
+
+
 def product(request, pk):
     product = Product.objects.get(id=pk)
     return render(request, 'store/product.html', {'product': product})
@@ -60,7 +62,7 @@ def register_user(request):
             user = authenticate(username=username, password=password)
             login(request, user)
             messages.success(request, ("You are Registered!"))
-            return redirect('home')
+            return redirect('update_info')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -125,3 +127,18 @@ def update_password(request):
         messages.warning(request, "You are not logged in")
         redirect('login')
 
+
+def update_info(request):
+    if request.user.is_authenticated:
+        current_user = Profile.objects.get(user__id=request.user.id)
+        form = UserInfoForm(request.POST or None, instance=current_user)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "Your info has been updated.")
+            return redirect('home')
+        return render(request, "store/update_info.html", {'form': form})
+    else:
+        messages.warning(request, "You should be logged in to update your profile")
+        return redirect('login')
