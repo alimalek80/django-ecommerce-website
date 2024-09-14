@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
 from django import forms
+from django.db.models import Q
 
 
 def category_summary(request):
@@ -142,3 +143,19 @@ def update_info(request):
     else:
         messages.warning(request, "You should be logged in to update your profile")
         return redirect('login')
+
+
+def search(request):
+    # Determined if they fill out the form
+    if request.method == "POST":
+        searched = request.POST['searched']
+        # Query the products database model
+        searched = Product.objects.filter(Q(name__icontains=searched) | Q(description__icontains=searched))
+        # Test for Null
+        if not searched:
+            messages.warning(request, "No products were found based on your search criteria.")
+            return redirect("search")
+        else:
+            return render(request, 'store/search.html', {'searched': searched})
+    else:
+        return render(request, 'store/search.html', {})
