@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from cart.cart import Cart
 from .models import Product, Category, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -7,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
 from django import forms
 from django.db.models import Q
+import json
 
 
 def category_summary(request):
@@ -35,6 +37,24 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+
+            # Do some shopping cart stuff
+            current_user = Profile.objects.get(user__id=request.user.id)
+            # Get their saved cart from database
+            saved_cart = current_user.old_cart
+            # Convert database string to python dictionary
+            if saved_cart:
+                # Convert to dictionary using JSON
+                converted_cart = json.loads(saved_cart)
+                # add the loaded cart dictionary to our session
+                # Get the cart
+                cart = Cart(request)
+                # Loop through the cart and the items from the database
+                for key, value in converted_cart.items():
+                    cart.db_add(product=key, quantity=value)
+
+
+
             messages.success(request, ("You Have been Logged in. Welcome"))
             return redirect('home')
         else:
