@@ -13,10 +13,16 @@
             <div class="row justify-content-center">
 
                     <div class="col-8 mt-5">
+                        <br/>
+                        <strong>Billing Information</strong>
                         <form method="POST" action="{% url 'update_info' %}">
                             {% csrf_token %}
                             {{ form.as_p }}
                             <br/><br/>
+                            <strong>Shipping Information</strong>
+                            <br/><br/>
+                            {{ shipping_form.as_p }}
+
                             <button type="submit" class="btn btn-secondary">Update Profile</button>
                         </form>
                         <br/>
