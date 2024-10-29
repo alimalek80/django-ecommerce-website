@@ -4,8 +4,8 @@
         <header class="bg-dark py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Checkout</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">Review your order...</p>
+                    <h1 class="display-4 fw-bolder">Billing info</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Enter your payment info...</p>
                 </div>
             </div>
         </header>
@@ -49,14 +49,26 @@
                       Shipping Info
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{% url 'billing_info' %}">
-                            {% csrf_token %}
-                            {{ shipping_form.as_p }}
-                            <div align=right>
-                                <button type="submit" class="btn btn-sm btn-success">Continue to billing</button>
-                            </div>
-                        </form>
+                            Name : {{ shipping_info.shipping_full_name }} <br/>
+                            Email: {{ shipping_info.shipping_email }} <br/>
+                            Address: {{ shipping_info.shipping_address1 }} - {{ shipping_info.shipping_address2 }} - {{ shipping_info.shipping_city }} - {{ shipping_info.shipping_zipcode }} - {{ shipping_info.shipping_state }} - {{ shipping_info.shipping_country }}
+                            <br/>
+                            <hr>
+                            <a href="{% url 'checkout' %}" class="btn btn-outline-secondary" >Update Shipping Address</a>
                     </div>
+                </div>
+                <br/>
+                <div class="card">
+                    <div class="card-header">
+                      Billing Info
+                    </div>
+                    <div class="card-body">
+                        {{ billing_form.as_p }}
+                            <a href="{% url 'checkout' %}" class="btn btn-outline-secondary" >Update Shipping Address</a>
+                    </div>
+                </div>
+                <div align=right>
+                    <a href="" class="btn btn-sm btn-success">Pay Now</a>
                 </div>
             </div>
         </div>
