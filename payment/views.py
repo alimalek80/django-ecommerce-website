@@ -4,10 +4,12 @@ from payment.forms import ShippingForm, PaymentForm
 from payment.models import ShippingAddress, Order, OrderItem
 from django.contrib.auth.models import User
 from django.contrib import messages
+from store.models import Product
 
 
 def process_order(request):
     if request.POST:
+        # Get the cart
         cart = Cart(request)
         cart_products = cart.get_prod
         quantities = cart.get_quants
@@ -37,6 +39,33 @@ def process_order(request):
             create_order = Order(user=user, full_name=full_name, email=email, shipping_address=shipping_address,
                                  amount_paid=amount_paid)
             create_order.save()
+
+            # Add Order Item
+
+            # Get Order ID
+            order_id = create_order.pk
+
+            # Get Product info
+            for product in cart_products():
+                # Get Product ID
+                product_id = product.id
+                # Get Product Price
+                if product.is_sale:
+                    price = product.sale_price
+                else:
+                    price = product.price
+
+                # Get quantity
+                for key, value in quantities().items():
+                    if int(key) == product.id:
+                        # create order item
+                        create_order_item = OrderItem(order_id=order_id, product_id=product_id,
+                                                      user=user,
+                                                      quantity=value,
+                                                      price=price)
+                        create_order_item.save()
+
+
             messages.success(request, "order placed")
             return redirect('home')
         else:
@@ -44,12 +73,38 @@ def process_order(request):
             create_order = Order(full_name=full_name, email=email, shipping_address=shipping_address,
                                  amount_paid=amount_paid)
             create_order.save()
+
+            # Add Order Item
+
+            # Get Order ID
+            order_id = create_order.pk
+
+            # Get Product info
+            for product in cart_products():
+                # Get Product ID
+                product_id = product.id
+                # Get Product Price
+                if product.is_sale:
+                    price = product.sale_price
+                else:
+                    price = product.price
+
+                # Get quantity
+                for key, value in quantities().items():
+                    if int(key) == product.id:
+                        # create order item
+                        create_order_item = OrderItem(order_id=order_id, product_id=product_id,
+                                                      quantity=value,
+                                                      price=price)
+                        create_order_item.save()
+
             messages.success(request, "order placed")
             return redirect('home')
 
     else:
         messages.success(request, "Access denied")
         return redirect('home')
+
 
 def billing_info(request):
     if request.POST:
