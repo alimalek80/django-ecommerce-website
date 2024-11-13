@@ -2,7 +2,7 @@
 {% block content %}
         <div class="container">
             <div class="row">
-                <h3>Not Shipped Items</h3>
+                <h3>Shipped Items</h3>
                 <br/>
                 <hr>
                 <br/>
@@ -22,7 +22,7 @@
                           <tbody>
                           {% for order in orders %}
                           	 <tr>
-                              <td>{{ order.id }}</td>
+                              <td><a href="{% url 'orders' order.id %}">{{ order.id }}</a></td>
                               <td>$ {{ order.amount_paid }}</td>
                               <td>{{ order.email }}</td>
                               <td>{{ order.date_ordered }}</td>

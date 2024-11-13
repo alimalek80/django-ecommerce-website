@@ -1,0 +1,55 @@
+{% extends 'store/base.html' %}
+{% block content %}
+        <div class="container">
+            <div class="row">
+                <h3>Order Detail</h3>
+                <br/>
+                <hr>
+                <br/>
+                    <div class="col-8 mx-auto">
+                        <div class="card">
+                          <div class="card-header">
+                            Order {{ order.id }} - $ {{ order.amount_paid }}
+                          </div>
+                          <div class="card-body">
+                              <b>Email:</b> <a href="mailto:{{ order.email }}">{{ order.email }}</a>  <br/>
+                              {% if order.shipped %}
+                                  <b>Date Shipped:</b> {{ order.date_shipped }} <br/>
+                              {% else %}
+                                  <b>Date Shipped:</b> Not Shipped Yet <br/>
+                              {% endif %}
+                              <b>Date Ordered:</b> {{ order.date_ordered }} <br/>
+                              <hr>
+                              <b>Full Name:</b> {{ order.full_name }} <br/>
+                              <b>Shipping Address: </b> {{ order.shipping_address }} <br/>
+                              <hr>
+                              <br/>
+                                <table class="table ">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">Item</th>
+                                      <th scope="col">Quantity</th>
+                                      <th scope="col">Price</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  {% for item in items %}
+                                    <tr>
+                                      <td>{{ item.product }}</td>
+                                      <td>{{ item.quantity }}</td>
+                                      <td>{{ item.price }}</td>
+                                    </tr>
+                                  {% endfor %}
+                                  </tbody>
+                                </table>
+                          </div>
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </div>
+            </div>
+        </div>
+{% endblock %}
